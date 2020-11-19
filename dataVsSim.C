@@ -51,6 +51,7 @@ void dataVsSim() {
     TH1D* dataHist = new TH1D("dataHist","",bins,xLower,xUpper);
 
     // Data drawn to histogram
+    // treeData->Draw((branchName + ">>dataHist").c_str(), "Lb_MM > 5800");
     treeData->Draw((branchName + ">>dataHist").c_str());
     dataHist->SetLineColor( kBlue );
 
@@ -58,12 +59,32 @@ void dataVsSim() {
     TH1D* simHist = new TH1D("simHist","",bins,xLower,xUpper);
 
     // Simulation drawn to histogram
+    // treeSim->Draw((branchName + ">>simHist").c_str(), "Lb_BKGCAT < 31");
     treeSim->Draw((branchName + ">>simHist").c_str());
     simHist->SetLineColor( kRed );
 
     // Both data sets drawn to canvas
-    dataHist->Draw();
-    simHist->Draw("SAME");
+    
+    // For testing
+    // printf("simHist Max: %f\n",simHist->GetMaximum());
+    // printf("dataHist Max: %f\n",dataHist->GetMaximum());
+    
+    // Uncomment and do manually if below if and else statements don't give correct axis scaling
+    // dataHist->DrawNormalized();
+    // simHist->DrawNormalized("SAME");
+    // simHist->DrawNormalized();
+    // dataHist->DrawNormalized("SAME");
+    
+
+    if (simHist->GetBinContent(simHist->GetMaximumBin()) > dataHist->GetBinContent(dataHist->GetMaximumBin()) ){ 
+        simHist->DrawNormalized();
+        dataHist->DrawNormalized("SAME");
+        simHist->SetMaximum(simHist->GetMaximumBin());
+    } else {
+        dataHist->DrawNormalized();
+        simHist->DrawNormalized("SAME");
+        dataHist->SetMaximum(dataHist->GetMaximumBin());
+    }
 
     // Legend created
     TLegend* leg = new TLegend();
