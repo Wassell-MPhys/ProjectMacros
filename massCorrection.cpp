@@ -8,10 +8,27 @@
 
 #include <iostream>
 
-void massCombinations( const std::string filename = "/run/media/davidwassell/David USB/dataMagUp2016/Lb_Tuple.root", const std::string outputfile = "mass.root" ){ 
+using namespace std;
 
-  TFile* root_file = TFile::Open( filename.c_str() );
-  TTree* root_tree = (TTree*) root_file->Get("tree");
+//void massCombinations( const std::string filename = "/run/media/davidwassell/David USB/dataMagUp2016/Lb_Tuple.root", const std::string outputfile = "mass.root" ){ 
+void massCombinations() {
+
+  // Data input assigned to variables
+  string dataSet, outputFileName;
+  int numBody;
+  cout << "Data Set? ";
+  cin >> dataSet;
+  cout << "Output file name? ";
+  cin >> outputFileName;
+
+
+  // Custom data file location string from input data
+  string dataFilePath = "/run/media/davidwassell/David USB/" + dataSet + "/Lb_Tuple.root";
+  string outputFile = outputFileName + ".root";
+
+  // Open data file path and create a tree
+  TFile* rootDataFile = TFile::Open(dataFilePath.c_str());
+  TTree* root_tree = (TTree*) rootDataFile->Get("tree");
   
   root_tree->SetBranchStatus("*",0);
 
@@ -24,7 +41,7 @@ void massCombinations( const std::string filename = "/run/media/davidwassell/Dav
   const double muon_mass = 105.658;
   const double pion_mass = 139.570;
   
-  TFile* output_file = new TFile(outputfile.c_str(),"RECREATE");
+  TFile* output_file = new TFile(outputFile.c_str(),"RECREATE");
   TTree* output_tree = new TTree("Masses","Masses");
     
   Double_t mPMu1, mPMu2, mKMu1, mKMu2; 
