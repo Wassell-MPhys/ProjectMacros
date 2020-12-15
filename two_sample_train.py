@@ -4,15 +4,15 @@ from sklearn.preprocessing import StandardScaler
 
 from root_pandas import read_root
 
-import pickle 
+import pickle
 import pandas
-import numpy 
+import numpy
 
-from two_sample_utilities import xgboost_variable_importance, xgboost_roc_curve 
+from two_sample_utilities import xgboost_variable_importance, xgboost_roc_curve
 from two_sample_utilities import xgboost_overtraining_check
 
 
-from two_sample_variables import var_list 
+from two_sample_variables import var_list
 
 #the signal input file
 sig_file = '/run/media/davidwassell/David USB/Lb2pKmm_magUp2016/Lb_Tuple.root'
@@ -34,9 +34,9 @@ sig_sample['Average_Mu_PT'] = 0.5*( sig_sample['mu1_PT'] + sig_sample['mu2_PT'] 
 bkg_sample['Average_h_PT'] = 0.5*( bkg_sample['h1_PT'] + bkg_sample['h2_PT'] )
 sig_sample['Average_h_PT'] = 0.5*( sig_sample['h1_PT'] + sig_sample['h2_PT'] )
 
-# Create a 'Signal' column in each data frame, 
-# which has the value 0 for background and 1 
-# for signal 
+# Create a 'Signal' column in each data frame,
+# which has the value 0 for background and 1
+# for signal
 bkg_sample['Signal'] = 0
 sig_sample['Signal'] = 1
 
@@ -53,14 +53,14 @@ print('Sig. sample contains {0} candidates'.format(len(sig_sample)))
 print('Bkg. sample contains {0} candidates'.format(len(bkg_sample)))
 
 
-# Merge the total sig and bkg samples into one data frame 
+# Merge the total sig and bkg samples into one data frame
 merged_sample = pandas.concat((sig_sample, bkg_sample))
 
 
 # Split the data
-X_train, X_test, y_train, y_test = train_test_split(merged_sample, 
-                                                    merged_sample['Signal'], 
-                                                    test_size=0.5, 
+X_train, X_test, y_train, y_test = train_test_split(merged_sample,
+                                                    merged_sample['Signal'],
+                                                    test_size=0.5,
                                                     random_state=101)
 
 
@@ -72,30 +72,34 @@ print (X_train[:5])
 X_train = X_train.drop( columns = ['Signal'] )
 X_test  = X_test.drop( columns = ['Signal'] )
 
-# The variables have very different scales, so to help the 
-# classifier, re-scale these to be more comparable. 
+# The variables have very different scales, so to help the
+# classifier, re-scale these to be more comparable.
 
-scaler  = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test  = scaler.transform(X_test)
+# scaler  = StandardScaler()
+# X_train = scaler.fit_transform(X_train)
+# X_test  = scaler.transform(X_test)
 
-# Save scaler so that this can be re-used when 
+# Save scaler so that this can be re-used when
 # applying the BDT
-with open('scaler.pickle','wb') as f:
-    pickle.dump(scaler, f)
+# with open('scaler.pickle','wb') as f:
+#     pickle.dump(scaler, f)
 
 # fit model to the training data
 bdt = XGBClassifier()
 bdt.fit(X_train, y_train)
 
 # save the classifier
-with open('xgboost.pickle', 'wb') as f:
-    pickle.dump(bdt, f)
+#with open('xgboost.pickle', 'wb') as f:
+#    pickle.dump(bdt, f)
+
+bdt.save_model('xgboost.model')
 
 # print variable importances
 print('\nVariable importance')
 print('--------------------' )
 xgboost_variable_importance( bdt, var_list + ['Average_Mu_PT', 'Average_h_PT']  )
+# xgboost_variable_importance( bdt, var_list + ['Average_h_PT']  )
+# xgboost_variable_importance( bdt, var_list + ['Average_Mu_PT']  )
 
 # draw a ROC curve
 xgboost_roc_curve( bdt, X_test, y_test )
