@@ -30,7 +30,7 @@ void LbMM() {
     // Open data file path and create a tree
     TFile* rootDataFile = TFile::Open(dataFilePath.c_str());
     TTree* tree = (TTree*) rootDataFile->Get("tree");
-    tree->AddFriend("Pred", "/run/media/davidwassell/David USB/Macros/Py_Macros/David MVA/Lb_Tuple-mva_sig.root");
+    tree->AddFriend("Pred", "/run/media/davidwassell/David USB/Macros/Py_Macros/David MVA/Lb_Tuple-mva_bkg.root");
 
     // Custom Canvas title string from input
     string canvasTitle = "Canvas: Lb_MM Comparison"; 
@@ -44,13 +44,23 @@ void LbMM() {
     dataHist->SetLineColor( kBlue );
 
     // 2nd histogram with Lb_ENDBERTEX_CHI2 < 10 - RED
-    TH1D* dataHistCut = new TH1D("dataHistCut","",bins,xLower,xUpper);
+    TH1D* dataHistCutByEye = new TH1D("dataHistCutByEye","",bins,xLower,xUpper);
+    tree->Draw("Lb_MM>>dataHistCutByEye", "Lb_ENDVERTEX_CHI2<15 && Lb_PT>4500 && Lb_IPCHI2_OWNPV<4 && h1_PT>750 && h2_PT>750 && mu1_PT>750 && mu2_PT>750 && Lb_FDCHI2_OWNPV>500");
+    // tree->Draw("Lb_MM>>dataHistCut", "MVA_S > 0.96");
+    dataHistCutByEye->SetLineColor( kGreen+1 );
+    
+    // 2nd histogram with Lb_ENDBERTEX_CHI2 < 10 - RED
+    TH1D* dataHistCutByMacro = new TH1D("dataHistCutByMacro","",bins,xLower,xUpper);
     // tree->Draw("Lb_MM>>dataHistCut", "Lb_ENDVERTEX_CHI2<15 && Lb_PT>4500 && Lb_IPCHI2_OWNPV<4 && h1_PT>750 && h2_PT>750 && mu1_PT>750 && mu2_PT>750 && Lb_FDCHI2_OWNPV>500");
-    tree->Draw("Lb_MM>>dataHistCut", "MVA_S > 0.96");
-    dataHistCut->SetLineColor( kRed );
+    tree->Draw("Lb_MM>>dataHistCutByMacro", "MVA_S > 0.96");
+    dataHistCutByMacro->SetLineColor( kRed );
     
     dataHist->Draw();
-    dataHistCut->Draw("SAME");
+    dataHist->SetTitle(" ");
+    dataHist->SetXTitle("LbMM");
+    dataHist->SetYTitle("Counts");
+    dataHistCutByEye->Draw("SAME");
+    dataHistCutByMacro->Draw("SAME");
     // dataHistCut2->Draw("SAME");
 
     return;
