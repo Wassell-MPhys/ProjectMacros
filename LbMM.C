@@ -42,22 +42,30 @@ void LbMM() {
     TH1D* dataHist = new TH1D("dataHist","",bins,xLower,xUpper);
     tree->Draw("Lb_MM>>dataHist");
     dataHist->SetLineColor( kBlue );
+    dataHist->SetLineWidth( 3 );
+    dataHist->SetStats(0);
+    //dataHist->GetXaxis()->SetLabelSize(1.25);
+    //dataHist->GetYaxis()->SetLabelSize(1.25);
 
     // 2nd histogram with Lb_ENDBERTEX_CHI2 < 10 - RED
     TH1D* dataHistCutByEye = new TH1D("dataHistCutByEye","",bins,xLower,xUpper);
     tree->Draw("Lb_MM>>dataHistCutByEye", "Lb_ENDVERTEX_CHI2<15 && Lb_PT>4500 && Lb_IPCHI2_OWNPV<4 && h1_PT>750 && h2_PT>750 && mu1_PT>750 && mu2_PT>750 && Lb_FDCHI2_OWNPV>500");
     // tree->Draw("Lb_MM>>dataHistCut", "MVA_S > 0.96");
     dataHistCutByEye->SetLineColor( kGreen+1 );
+    dataHistCutByEye->SetLineWidth( 3 );
+    // dataHistCutByEye->SetStats(0);
     
     // 2nd histogram with Lb_ENDBERTEX_CHI2 < 10 - RED
     TH1D* dataHistCutByMacro = new TH1D("dataHistCutByMacro","",bins,xLower,xUpper);
     // tree->Draw("Lb_MM>>dataHistCut", "Lb_ENDVERTEX_CHI2<15 && Lb_PT>4500 && Lb_IPCHI2_OWNPV<4 && h1_PT>750 && h2_PT>750 && mu1_PT>750 && mu2_PT>750 && Lb_FDCHI2_OWNPV>500");
     tree->Draw("Lb_MM>>dataHistCutByMacro", "MVA_S > 0.96");
     dataHistCutByMacro->SetLineColor( kRed );
+    dataHistCutByMacro->SetLineWidth( 3 );
+    // dataHistCutByMacro->SetStats(0);
     
     dataHist->Draw();
     dataHist->SetTitle(" ");
-    dataHist->SetXTitle("LbMM");
+    dataHist->SetXTitle("LbMM (MeV/c^2)");
     dataHist->SetYTitle("Counts");
     dataHistCutByEye->Draw("SAME");
     dataHistCutByMacro->Draw("SAME");
