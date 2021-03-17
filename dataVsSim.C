@@ -4,38 +4,41 @@
 #include "TTree.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TLatex.h"
+#include "TStyle.h"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 
 using namespace std;
 
+
 void dataVsSim() {
+    // Setting plotting style
+    gStyle->SetTitleFont(132, "X");
+    gStyle->SetTitleFont(132, "Y");
+    gStyle->SetLabelFont(132, "X");
+    gStyle->SetLabelFont(132, "Y");
+    gStyle->SetTitleSize(0.04, "X");
+    gStyle->SetTitleSize(0.04, "Y");
+    gStyle->SetLabelSize(0.04, "X");
+    gStyle->SetLabelSize(0.04, "Y");
+    gStyle->SetLegendFont(132);  
     // Data input assigned to variables
-    string dataSet, simSet, branchName;
-    int bins;
-    float xLower, xUpper;
-    cout << "Data Set? ";
-    cin >> dataSet;
-    cout << "Simulation Data Set? ";
-    cin >> simSet;
-    cout << "Branch? ";
-    cin >> branchName;
-    cout << "Number of bins? ";
-    cin >> bins;
-    cout << "From? ";
-    cin >> xLower;
-    cout << "To? ";
-    cin >> xUpper;
-    
-    // Custom data file location string from input data
-    string dataFilePath = "/run/media/davidwassell/David USB/" + dataSet + "/Lb_Tuple.root";
-    // Custom simulation data file location string from input data
-    string simFilePath = "/run/media/davidwassell/David USB/" + simSet + "/Lb_Tuple.root";
+    string dataSet = "dataMagUp2018";
+    string simSet = "Lb2pKmm_magUp2016";
+    string dataFilePath = "/run/media/davidwassell/David USB/dataMagUp2018/Lb2pKmm_mgUp_2018.root";
+    string simFilePath = "/run/media/davidwassell/David USB/Lb2pKmm_magUp2016/Lb_Tuple.root";
+    string branchName = "Lb_PT";
+    int bins = 100;
+    float xLower = 0.0; 
+    float xUpper = 25000.0;
+
+
 
     // Open data file path and create a tree
     TFile* rootDataFile = TFile::Open(dataFilePath.c_str());
-    TTree* treeData = (TTree*) rootDataFile->Get("tree");
+    TTree* treeData = (TTree*) rootDataFile->Get("Lb_Tuple/DecayTree");
 
     // Open sim file path and create a tree
     TFile* rootSimFile = TFile::Open(simFilePath.c_str());
@@ -51,7 +54,7 @@ void dataVsSim() {
     TH1D* dataHist = new TH1D("dataHist","",bins,xLower,xUpper);
 
     // Data drawn to histogram
-    // treeData->Draw((branchName + ">>dataHist").c_str(), "Lb_MM > 5800");
+    // treeData->Draw((branchName + ">>dataHist").c_str(), "Lb_PT > 4500");
     treeData->Draw((branchName + ">>dataHist").c_str());
     dataHist->SetLineColor( kBlue );
 
@@ -59,38 +62,24 @@ void dataVsSim() {
     TH1D* simHist = new TH1D("simHist","",bins,xLower,xUpper);
 
     // Simulation drawn to histogram
-    // treeSim->Draw((branchName + ">>simHist").c_str(), "Lb_BKGCAT < 31");
+    // treeSim->Draw((branchName + ">>simHist").c_str(), "Lb_BKGCAT < 11");
     treeSim->Draw((branchName + ">>simHist").c_str());
     simHist->SetLineColor( kRed );
 
-    // Both data sets drawn to canvas
+    // Both data sets drawn to ca
     
-    // For testing
-    // printf("simHist Max: %f\n",simHist->GetMaximum());
-    // printf("dataHist Max: %f\n",dataHist->GetMaximum());
-    
-    // Uncomment and do manually if below if and else statements don't give correct axis scaling
-    // dataHist->DrawNormalized();
-    // simHist->DrawNormalized("SAME");
-    // simHist->DrawNormalized();
-    // dataHist->DrawNormalized("SAME");
+    // Setting axis labels
+    dataHist->SetXTitle("#it{#Lambda}_{b}^{0} transverse momentum [MeV/#it{c}^{2}]");
+    dataHist->SetYTitle("Candidates / [25 MeV/#it{c}^{2}]");
+    dataHist->SetStats(0);
+    dataHist->DrawNormalized();
+    simHist->DrawNormalized("SAME");
     
 
-    if (simHist->GetBinContent(simHist->GetMaximumBin()) > dataHist->GetBinContent(dataHist->GetMaximumBin()) ){ 
-        simHist->DrawNormalized();
-        dataHist->DrawNormalized("SAME");
-        simHist->SetMaximum(simHist->GetMaximumBin());
-    } else {
-        dataHist->DrawNormalized();
-        simHist->DrawNormalized("SAME");
-        dataHist->SetMaximum(dataHist->GetMaximumBin());
-    }
-
-    // Legend created
+    // Setting Legend
     TLegend* leg = new TLegend();
-    leg->SetHeader("Legend");
-    leg->AddEntry("dataHist",(branchName + " - " + dataSet).c_str(),"l");
-    leg->AddEntry("simHist",(branchName + " - " + simSet).c_str(),"l");
+    leg->AddEntry("dataHist","Real Data","l");
+    leg->AddEntry("simHist","MC Data","l");
     leg->Draw();
 
     return;
