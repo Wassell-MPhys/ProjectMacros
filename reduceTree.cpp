@@ -16,8 +16,7 @@ void reduceTree( const std::string input_file_name,
      Int_t Polarity = 1,
      const std::string selection = "" ){ 
 
-  // The set of branches you want to appear in the new 
-  // file
+  // The set of branches you want to appear in the new file
   std::vector< std::string > branches = { 
     "Lb_M", "Lres_MM", "Lb_ID", "h1_ProbNNp", "h1_ProbNNmu", "h1_ProbNNk", "h1_ProbNNpi", "h2_ProbNNp", "h2_ProbNNmu", "h2_ProbNNk", "h2_ProbNNpi", "mu1_ProbNNmu", "mu2_ProbNNmu", "Jpsi_MM"
   }; 
