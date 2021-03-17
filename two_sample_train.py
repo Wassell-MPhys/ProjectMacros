@@ -15,13 +15,14 @@ from two_sample_utilities import xgboost_overtraining_check
 from two_sample_variables import var_list
 
 #the signal input file
-sig_file = '/run/media/davidwassell/David USB/Lb2pKmm_magUp2016/Lb_Tuple.root'
-bkg_file = '/run/media/davidwassell/David USB/dataMagUp2016/Lb_Tuple.root' 
+sig_file = '/run/media/davidwassell/David USB/Lb2pKmm_magUp2018/Lb_Tuple.root'
+bkg_file = '/run/media/davidwassell/David USB/dataMagUp2016/Lb2pKmm_mgUp_2016.root' 
 
-root_tree  = 'tree'
+root_tree_bkg  = 'Lb_Tuple/DecayTree'
+root_tree_sig = 'tree'
 
-bkg_sample = read_root( bkg_file, root_tree, columns = var_list + [ 'Lb_M', 'mu1_PT', 'mu2_PT', 'Jpsi_MM', 'h1_PT', 'h2_PT' ] )
-sig_sample = read_root( sig_file, root_tree, columns = var_list + [ 'Lb_M', 'Lb_BKGCAT', 'mu1_PT', 'mu2_PT', 'Jpsi_MM', 'h1_PT', 'h2_PT' ] )
+bkg_sample = read_root( bkg_file, root_tree_bkg, columns = var_list + [ 'Lb_M', 'mu1_PT', 'mu2_PT', 'Jpsi_MM', 'h1_PT', 'h2_PT' ] )
+sig_sample = read_root( sig_file, root_tree_sig, columns = var_list + [ 'Lb_M', 'Lb_BKGCAT', 'mu1_PT', 'mu2_PT', 'Jpsi_MM', 'h1_PT', 'h2_PT' ] )
 
 # bkg_sample = bkg_sample.query('Lb_M > 6000' and (('1e8 < 1e-6*Jpsi_MM*Jpsi_MM' and '1e-6*Jpsi_MM*Jpsi_MM < 8e9') or ('11e9 < 1e-6*Jpsi_MM*Jpsi_MM' and '1e-6*Jpsi_MM*Jpsi_MM < 12.5e9') or ('15e9 < 1e-6*Jpsi_MM*Jpsi_MM' and '1e-6*Jpsi_MM*Jpsi_MM < 19e9')))
 # sig_sample = sig_sample.query('Lb_BKGCAT < 60' and (('1e8 < 1e-6*Jpsi_MM*Jpsi_MM' and '1e-6*Jpsi_MM*Jpsi_MM < 8e9') or ('11e9 < 1e-6*Jpsi_MM*Jpsi_MM' and '1e-6*Jpsi_MM*Jpsi_MM < 12.5e9') or ('15e9 < 1e-6*Jpsi_MM*Jpsi_MM' and '1e-6*Jpsi_MM*Jpsi_MM < 19e9')))
