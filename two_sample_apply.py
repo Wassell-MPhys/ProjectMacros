@@ -9,6 +9,8 @@ import sys
 
 from two_sample_variables import var_list
 
+# Takes 2 input arguments, simulation data file and output file name
+
 def print_usage():
     print( '\nUsage:' )
     print( '-----' )
@@ -20,7 +22,8 @@ print(sys.argv)
 
 if ( 3 == len(sys.argv) ):
     input_file  = sys.argv[1]
-    root_tree   = 'tree'
+    root_tree   = 'Lb_Tuple/DecayTree'
+    # root_tree   = 'tree'
     output_file = sys.argv[2]
 
     # sample = read_root( input_file, root_tree, columns = var_list + [ 'mu1_PT', 'mu2_PT' ] )
@@ -34,6 +37,7 @@ if ( 3 == len(sys.argv) ):
     # Average h PT
     # sample['Average_h_PT'] = 0.5*( sample['h1_PT'] + sample['h2_PT'] )
     # sample = sample.drop( columns = [ 'h1_PT', 'h2_PT' ] )
+
 
     print( '\nDataset' )
     print( '--------' )
